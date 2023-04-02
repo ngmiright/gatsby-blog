@@ -34,6 +34,7 @@ const config: GatsbyConfig = {
           },
         ],
         postsPrefix: `/blog/`,
+        formatString: `YYYY.MM.DD`,
         externalLinks: [
           {
             name: `Twitter`,
