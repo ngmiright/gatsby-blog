@@ -33,6 +33,7 @@ const config: GatsbyConfig = {
             slug: `/about`,
           },
         ],
+        postsPrefix: `/blog/`,
         externalLinks: [
           {
             name: `Twitter`,
