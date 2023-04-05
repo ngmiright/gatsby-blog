@@ -1,5 +1,5 @@
 import React from "react"
-import { Footer } from "@lekoarts/gatsby-theme-minimal-blog/src/components/footer"
+import Footer from "@lekoarts/gatsby-theme-minimal-blog/src/components/footer"
 import useSiteMetadata from "@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-site-metadata"
 import { jsx, Link } from "theme-ui"
 
