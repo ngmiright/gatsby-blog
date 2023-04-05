@@ -48,6 +48,15 @@ const config: GatsbyConfig = {
       },
     },
     {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        // The unique name for each instance
+        name: `posts`,
+        // Path to the directory
+        path: `${__dirname}/content/posts/`,
+      },
+    },
+    {
       resolve: `gatsby-plugin-sitemap`,
       options: {
         output: `/`,
