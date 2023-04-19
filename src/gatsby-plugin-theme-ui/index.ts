@@ -38,7 +38,10 @@ const theme = merge(tailwind, {
     },
   },
   fonts: {
+    // comment out the following line to use typography.js
+    /* 
     body: `-apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"`,
+    */
   },
   styles: {
     root: {
