@@ -1,0 +1,274 @@
+---
+title: "Journeying Through the JavaScript Universe: A Book Review of Just JavaScript by Dan Abramov"
+date: 2023-05-08
+slug: "/journeying-through-the-javascript-universe-a-book-review-of-just-javascript-by-dan-abramov"
+tags:
+  - Book
+  - JavaScript
+  - Mental Model
+  - Review
+---
+
+After learning web development on and off for about two years, I recently decided to switch my career to become a full-time developer. Since I’ve forgotten many of the syntax and concepts of JavaScript, relearning JavaScript has been a significant task for me. When searching for relevant materials, I ran into this interactive book called [Just JavaScript][1], written by Dan Abramov, a renowned React contributor. 
+
+We all learned JavaScript fundamentals using different methodologies: reading books, skimming through documentations, or watching video-based tutorials. Consequently, the way we understand how JavaScript works may differ from person to person. To put it simply, we can say that we have different mental models. The differences may be subtle, but the outcomes could be entirely different when it comes to the deterministic code.
+
+With Dan’s insightful and enlightening book, I feel like my mental model gets fixed pretty well. And I know that once a robust mental model is built, debugging problems will be easier since you know what problems they could possibly be. That's exactly why I would recommend this book to those who are like me knowing some JavaScript but don’t know it well enough :)
+
+Without further ado, let’s dive right in.
+
+## What are Mental Models?
+> “The approximations of how something works in our head are known as ‘mental models.’” — Dan Abramov
+
+Generally, mental models in programming refer to how we understand and reason about the code. And for JavaScript, we likely have different mental models built upon our diverse experiences as developers.
+
+When we first learned JavaScript, tutorials online probably sacrificed accuracy to make concepts more straightforward for us to understand. Or some developers might already be familiar with other programming languages, so they naturally applied their current knowledge in other programming languages to similar concepts in JavaScript, even though they were not the same.
+
+Let’s put away our previous mental model and build a new one, at least for now :)
+
+## The JavaScript Universe
+For JavaScript, we can think of it as a universe. And our code lives in the center of the universe as our Earth does, with values floating around in space (like stars).
+
+![javascript-universe](https://res.cloudinary.com/dhidtmfce/image/upload/v1683461285/javascript-universe_qhhoum.png)
+
+### Objects are Satellites
+As you might notice, objects and functions are closer to our code in this universe of JavaScript. They are like moons or satellites. As humans, we have launched thousands of satellites over the past decades. So, for objects and functions, we can manipulate them easily and create them.
+
+### Primitive Values are Distant Stars
+One of the most fundamental ideas from this book is that primitive values don’t exist in our code, but we can point to them — exactly like how we point our fingers at distant stars from our Earth. 
+
+### Nine Types of Value in JavaScript
+Now, let’s get back to the data types in JavaScript. There are broadly two major categories of values, which can further be sorted into nine value types:
+- Primitive Values
+	- Undefined
+	- Null
+	- Booleans
+	- Numbers
+	- BigInts (uncommon and new)
+	- Strings
+	- Symbols (uncommon)
+- Objects and Functions
+	- Objects
+	- Functions
+That’s all. And there are no other types. Even functions are objects essentially. What about `Arrays` or `Date`? They are objects as well.
+
+### Expressions are Questions
+As programmers, we write expressions as we code. But what even are expressions?
+
+> “Expressions are questions that JavaScript can answer. JavaScript answers expressions in the only way it knows how—with values.” — Dan Abramov
+
+Generally speaking, the code we write is a series of expressions. When we hit that “RUN” button after writing lines of code, we’re asking questions to JavaScript, and it would kindly answer us with some values if the questions are decent; otherwise, it would throw an error without hesitation.
+
+#### `typeof` Expression
+To be honest,  `typeof` is an expression I barely used before. It was not until I read this book that I realized how useful it could be in inspecting values. Whenever in doubt about something, wrap it in a `typeof` expression, and it will tell you which type it exactly is, with only one exception:
+- `typeof(null)` is an "object" even though `null` is not an object. This is an ancient bug that can’t be fixed.
+
+## Variables and Values
+Now that you know, values don’t exist in our code. What about variables?
+
+![variables-values](https://res.cloudinary.com/dhidtmfce/image/upload/v1683461283/variables-values_ycbu4g.png)
+
+### Variables are Wires
+Variables are not values. Instead, variables point to values. Therefore variables can be thought of as wires:
+- Variables don’t have types — only values do.
+- Variables can’t be passed. It’s always values that get passed.
+- Variables always point to values. We can’t point variables to each other.
+
+### Rule of Assignment
+In JavaScript, `=` is used as an assignment operator, assigning the value on the right side of the operator to the variable on the left side. 
+- The left side of the `=` assignment operator must be a “wire” — variable. It can’t be a value.
+- The right side of the assignment must be an expression (or a value). A valid expression always results in a value. Expressions that are literally values are called literals. For example, `"hello"` is a string literal.
+
+## Primitive Values
+Primitive values are pre-existed and immutable (read-only). We can’t create or modify them, but only point to them. What if we set a property on a primitive value? The answer is straightforward — in strict mode, it errors; otherwise, the assignment is ignored.
+
+Let’s relearn these seven types of primitive values altogether now. Remember: they are distant stars in our JavaScript universe :)
+
+### Undefined
+There is only one type of value in undefined, which is `undefined` itself. By the way, it’s worth noting that a variable always points to a value after being declared. When you declare a variable without assigning a value to it, it points to `undefined` by default. A common misunderstanding about `undefined` is that many people think variables that haven’t been declared point to `undefined` by default. However, the truth is, if you read a variable that hasn’t been defined/declared, you will get a `ReferenceError`.
+
+### Null
+Similar to undefined, null also has itself as the only type of value. `null` is NOT an object, even though `typeof(null)` says it is due to a historical bug in the early days of JavaScript. In contrast with `undefined`, `null` is usually used for intentionally missing values.
+
+### Booleans
+Booleans, like a light switch that can be turned either ON or OFF, have only two possible values: `true` and `false`. And we can perform logical operations with them, which can come in handy dealing with complex programming logic.
+
+### Numbers
+JavaScript implements floating-point math like many other programming languages do. Floating-point math is math for computers. This is precisely why `0.1 + 0.2 === 0.3` surprisingly results in `false`, while `0.1 + 0.2 === 0.30000000000000004` is strangely `true` in JavaScript.
+
+Simply speaking, JavaScript uses numbers with limited precision, meaning:
+- Not all numbers can be perfectly represented in JavaScript.
+- The closer to 0, the more precision numbers have.
+- Any whole numbers between `Number.MIN_SAFE_INTEGER` and `Number.MAX_SAFE_INTEGER` are exact.
+
+#### Special Numbers
+Although it’s generally uncommon to use special numbers, they exist to represent results of specific operations (mostly considered mathematically invalid), for example, `1/0`.
+
+`NaN`, `Infinity`, `-Infinity`, and `-0` are the special numbers we can potentially run into. `NaN` stands for “not a number.” Now that `NaN` is a numeric value, `typeof(NaN)` returns `“number”` as a result.
+
+### BigInts
+Because there are limited values for numbers in JavaScript, BigInts are here to expand that limited integer numbers to infinite ones. But fortunately, we don’t deal with BigInts as much since they are not widely used yet. BigInts were not introduced to JavaScript until June 2020 and won’t work in older browsers. So Let’s skip them for now :)
+
+### Strings
+In our JavaScript universe, strings are everywhere — all conceivable string values already exist somewhere, and there is always only one value for every distinct string.
+
+Frankly speaking, I think it’s not just me who once mistakenly thought that strings were mutable as they acted like they were. But please remember that strings are primitive values that are always immutable. Whenever we attempt to “modify” a string value, we are not modifying that string; instead, we are pointing the wire to another string. 
+
+![strings-values](https://res.cloudinary.com/dhidtmfce/image/upload/v1683461285/strings-values_bqxur1.png)
+
+In addition, we should also be aware that strings are NOT objects, even though they have built-in properties.
+
+### Symbols
+In a nutshell, Symbols are used to hide the properties of an object. And they are relatively not common. So let’s leave it off for now :)
+
+## Objects and Functions
+Unlike those pre-existing primitive values that we cannot create but only point to, objects and functions are values we can create. They are satellites in our universe; we can create and manipulate them as we want.
+
+### Objects
+In JavaScript, Objects are non-primitive values. Be it `Arrays`, `Date`, `Math`, or RegEx, they are all objects fundamentally. Every time we use the `{}` object literal, we create a new object value that has never existed.
+
+This also applies to arrays, dates, and any other objects — take `[]`, for instance; it creates a brand new array whenever we use it.
+
+Interestingly, JavaScript is a garbage-collected language, meaning we can create objects but not destroy them. Think about the space debris floating in space — we as human beings can never destroy them and make them physically disappear. The same goes for objects in JavaScript. 
+
+![objects-float](https://res.cloudinary.com/dhidtmfce/image/upload/v1683461285/objects-float_jhfeul.png)
+
+### Functions
+Functions, like objects, are values that can be assigned to variables and don't exist in our code. In fact, functions are objects with unique capabilities compared to regular objects. A new function value will be created whenever we use the `function() {}` expression.
+
+Understanding the difference between a function and a function call is important. Let’s look at the code snippets below:
+
+```js
+let launchMoon = function() { 
+	return "the moon is launched"; 
+};
+let launchSatellite = launchMoon;
+let launchResult = launchMoon(); // () is a function call
+console.log(launchResult); // "the moon is launched"
+```
+
+`launchSatellite` and `launchResult()` point to different values here:
+- `let launchSatellite = launchMoon` means point `launchSatellite` to the value that `launchMoon` is currently pointing to, which is the function value `function() { return "the moon is launched"; }`.
+- `let launchResult = launchMoon()` means point `launchResult` to the value **returned by** the function that `launchMoon` is currently pointing to, which is the string value `“the moon is launched”`.
+Therefore, in our case above, `launchMoon()` is a function call expression that will execute the function and return us with a string value, while `launchMoon` is merely a function value.
+
+## Equality of Values
+Equality of values is used to compare and determine if two values are the same or equivalent. It matters a lot as we all want our program runs as expected. Overall, we can use three kinds of equality to compare values.
+
+### Same Value Equality
+Known as same value equality, `Object.is(a, b)` is the less talked about equality in JavaScript. With `Object.is`, we can compare any two values, whether they are objects or not.
+
+When variables `a` and `b` point to the same value, `Object.is(a, b)` returns `true`, otherwise, it returns `false`.
+
+### Strict Equality
+`a === b`, known as strict equality, is probably the most popular way to compare values in JavaScript. It also has the corresponding opposite operator `!==`.
+In almost all cases, strict value equality behaves the same way as same value equality. However, there are two rare exceptions where `===` behaves differently, both involving special numbers:
+- `NaN === NaN` is `false`, although they are the same value. Conversely, `NaN !== NaN` is `true`. This was purposefully designed to detect `NaN` before JavaScript even existed.
+- `-0 === 0` and `0 === -0` are both true, even if they are different values.
+
+### Loose Equality
+`a == b`, known as “loose equality” or “abstract equality,” is widely considered an early bad design decision of JavaScript. In most cases, we should avoid using `==` and `!=` unless with compelling reasons. And here is a [JavaScript Equality Table][2] that would help make sense of it if it hasn’t already made sense :)
+
+
+## Properties
+In our mental model, all wires always point to values. Variables are wires, and properties also act like “wires,” although they start from objects rather than our code. Properties don’t contain values — instead, they point to them.
+
+![properties](https://res.cloudinary.com/dhidtmfce/image/upload/v1683461283/properties_hufczm.png)
+
+### Reading Properties
+We can read a property’s current value by using `.`(dot notation) or `[]`(bracket notation). But can we read a property that doesn’t exist? In fact, there are some rules we should know about in terms of reading missing properties:
+- If the object or the property on the left side of the `.` is `null` or `undefined`, it will throw an error.
+- If the property on the right side of the `.` doesn’t exist, it answers with `undefined`, but it doesn’t mean the object has a missing property pointing to `undefined`. It’s just rules.
+
+Dan also shares his insights on expressions in general:
+> “Fundamentally, it’s because every expression needs to result in some value, or throw an error. Some other languages throw an error if you access a property that doesn’t exist—but JavaScript is not one of them!” 
+
+## Mutation
+
+> “Mutation” is a fancy way of saying “change.” — Dan Abramov
+
+### Objects are NOT Nested
+Even though nested objects may appear to be nested in code, they are not actually nested in the sense that the objects are inside one another. Each object is completely separate. 
+
+### Properties Always Point to Values
+A property can’t point to another property or a variable. It always points to a value. When we assign a value to a property, it’s the value itself that matters during the assignment, not how we find it (even if it’s via another property).
+
+### Mutation Should be Done Intentionally
+As a JavaScript developer, you’ve probably done this many times: you accidentally modify an object, forgetting that many other objects also point to it. This is why the nested objects mental model doesn’t make sense — it makes you less focused on the mutation behind the scenes and ignore the potential side effects.
+
+Generally, there are two possible solutions to avoid this:
+- Mutate the object, which involves mutation.
+- Create a new object and point to it, which doesn’t mutate the original object. However, we will then have an isolated “abandoned” object that can’t be reached.
+
+### `const` vs. `let`
+With `const`, we can create read-only variables (aka “constants”). However, if the constant points to an object, we can still mutate the properties of that object.
+
+Unlike `const`, with `let`, we can reassign values to variables, which could be handy if we pay enough attention to the mutation under the hood.
+
+### Suggestions on Mutation
+Mutation is preferably contained to a very narrow layer of your application, thus making the program more predictable. Dan also suggests that mutating newly created objects is definitely acceptable; otherwise, we should be very intentional about what on earth we’re mutating and the side effects it could possibly bring.
+
+## Prototypes
+Honestly, I didn’t really learn about them when I first started learning JavaScript. The only thing I knew about prototypes was about inheritance — like every array I instantiated in JavaScript inherited methods from the Array prototype. Let’s see how Dan would teach us about it :)
+
+### `__proto__ ` property in JavaScript
+Any JavaScript object may choose another object as a prototype. We can instruct JavaScript to look for missing properties on another object by specifying `__proto__`.
+
+### The Prototype Chain
+Prototype chain refers to the process of searching for properties and methods on an object's prototype and its prototype's prototype, and so on, until the property or method is found or the end of the prototype chain is reached. It’s worth noting that a prototype chain can’t be circular, meaning it must have an end.
+
+### Shadowing
+Once the property or method is found somewhere along the prototype chain, the search ends. But how do I know if the property belongs to the object? We can use a built-in function called `hasOwnProperty` to check if an object has the property on its own. It returns true if the object has the property, meaning it’s shadowing the property on the prototype if the same property exists somewhere on the prototype chain.
+
+### The Object Prototype
+By default, every “empty” object created has a hidden `__proto__` wire that points to the Object Prototype. And this is exactly why every JavaScript object seems to have “built-in” properties, which are actually accessed from the Object Prototype.
+
+### An Object with No prototype
+We can create an object with its `__proto__` set to `null` so that it won’t have any built-in object methods. A fun fact is that the Object Prototype is exactly an object with no prototype.
+
+### Prototype Pollution
+Prototype pollution refers to mutating properties on the Object Prototype, which can lead to unexpected behaviors and is often considered a vulnerability in JavaScript applications. Even if it used to be a popular way to extend JavaScript with custom features in the past, nowadays, in most cases, we should avoid doing so.
+
+### `__proto__` vs `prototype`
+Classes were not introduced until the ES6 version of JavaScript was released in June 2015. Before that, the `__proto__` and the `new` keyword are commonly used to set up and instantiate prototypes for objects.
+
+However, in modern code, we would use `class` with a `constructor()` to create built-in properties and functions for objects. But the object still finds the property by looking it up via `__proto__` under the hood.
+
+### Beneath Classes There are Prototypes
+In practice, we probably don’t use prototypes directly as much. In fact, the using of `__proto__` syntax is generally discouraged, but it’s good to know how those features build on each other and the underlying mechanisms between them.
+
+## The JavaScript Universe Journey Continues…
+
+Dan ends the book with a poem. And I purposefully feed that poem into chatGPT, it replies:
+
+> As an AI language model, I don't have a consciousness to see things like humans do. However, I can understand the sentiment you are expressing through your writing. It sounds like you have a deep appreciation for the process of programming, and how it can sometimes feel like you are lost in a dream-like state as you work on your code. When you find your way back and achieve a sense of clarity, it can be a beautiful and rewarding experience. Your description of seeing the values and the connections between them is a testament to the way programming can help us see the world in a new and unique way.
+
+Regardless of your coding level, I highly recommend [Just JavaScript][3] to any JavaScript developer. The biggest takeaway for me from this book is that whenever in doubt or confused, sketch a diagram of variables and values to figure out how data flows throughout the lines of code. Want to know how to do this? Dan will teach you how in the book :)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1]:	https://justjavascript.com/
+[2]:	https://dorey.github.io/JavaScript-Equality-Table/
+[3]:	https://justjavascript.com/
