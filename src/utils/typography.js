@@ -7,6 +7,7 @@ lincolnTheme.headerColor = ""
 lincolnTheme.bodyColor = ""
 lincolnTheme.overrideThemeStyles = ({ adjustFontSizeTo, scale, rhythm }, options) => ({
     a: {textShadow: "none", backgroundImage: "none"},
+    blockquote: {color: ""},
 })
 
 const typography = new Typography({
