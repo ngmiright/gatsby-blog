@@ -1,0 +1,275 @@
+---
+title: "Unleashing ChatGPT with JavaScript: A Beginner's Guide to Prompt Engineering for Developers"
+date: 2023-05-25
+slug: "/unleashing-chatgpt-with-javascript-a-beginners-guide-to-prompt-engineering-for-developers"
+tags:
+  - AI
+  - ChatGPT
+  - Course
+  - JavaScript
+  - Prompt Engineering
+  - Review
+  - Tutorial
+---
+
+**TL;DR**: This article mainly covers the basics and common use cases of using ChatGPT via OpenAI API as a developer, with distilled takeaways from the short interactive course [ChatGPT Prompt Engineering for Developers](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/) on [deeplearning.ai](https://www.deeplearning.ai/). Basic knowledge of JavaScript is required to implement the practices demonstrated in this article. Please check out all the code snippets on the GitHub repo [chatgpt-pe](https://github.com/ngmiright/chatgpt-pe), and feel free to clone it and play around with it. :)
+
+## I Love ChatGPT
+ChatGPT has been quite popular in recent months since being rolled out late last year. Honestly, I’ve been using it more often than a normal search engine, especially when I run into tricky coding troubleshooting. And as a non-native English writer, I often ask it to check if a phrase or wording is proper and help polish my sentences as well. ChatGPT is definitely a productivity booster for me :)
+
+## But ChatGPT is NOT Omnipotent
+With all that benefits being said, it’s not yet capable of solving all kinds of problems. Here are some obvious shortcomings of ChatGPT:
+- It provides misinformation very often. In other words, it lies a lot. This is mostly because ChatGPT has a tendency to manage to get thumbs-ups from users instead of honestly confessing the truth that it doesn’t know something. So it would rather make up an answer that seems reasonable while it’s actually bullshit. Watching this video [ChatGPT with Rob Miles - Computerphile](https://youtu.be/viJt_DXTfwA "ChatGPT with Rob Miles - Computerphile") will give you a deeper understanding of that.
+- Despite being remarkably knowledgeable, it has an indistinct boundary of knowledge. It’s unknown to everyone to what extent it does actually master human knowledge, which could also pose a threat to us human beings as it continues to evolve without us being aware in the future.
+- It’s essentially good at predicting texts, not actually knowing something. Consequently, prompt engineering is introduced to guide the AI to generate the outputs we need.
+
+## What is Prompt Engineering?
+Generally speaking, prompt engineering refers to the process of carefully designing prompts for AI to generate desired outputs. For instance, putting a simple shorthand like “TLDR” after a chuck of text is a common technique of prompt engineering, which is interestingly an effective measure to tell AI to summarize the text that comes before it. 
+
+As developers, we can further discover new ways to use ChatGPT to build the applications we want. Just before that, we need to learn about what ChatGPT fundamentally is.
+
+## ChatGPT is an Instruction-tuned LLM
+As you may know, “LLM” stands for “large language model”. Before ChatGPT, there were GPT-1 and GPT-2, which can be considered **base LLMs**. They work by predicting the likelihood of words in a given sequence of text. However, they are not as usable as the ChatGPT we use today. For example, if you ask a base LLM a question, it would probably answer you with a list of related questions instead of giving you a helpful and informative answer as ChatGPT does. 
+
+What differentiates ChatGPT from previous base LLMs is that it’s an **instruction-tuned LLM**. An instruction-tuned model tries to follow instructions, as it has been fine-tuned on instructions and good attempts at following those instructions and refined using a technique called RLHF (**Reinforcement Learning with Human Feedback**). 
+
+## Prerequisites and Installations
+
+To interact with the OpenAI APIs, an OpenAI account is required. Sign up for a free one if you haven’t already. 
+
+Since the short course [ChatGPT Prompt Engineering for Developers](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/) covers the implementation in Python, I’ll go with JavaScript here as a supplement to that :)
+
+### 1. OpenAI Node.js Library Installation
+
+As a prerequisite, Node.js runtime environment is required for this project. The following command is used to install the OpenAI Node.js library:
+
+```bash
+npm install openai
+```
+
+### 2. API Key and `.env` Configuration
+
+Go to [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) to create the API key required.
+
+By the way, using the `dotenv` module to load the OpenAI API key is recommended for security purposes. Install it using the following command if you haven’t already:
+
+```bash
+npm install dotenv
+```
+
+In your `.env` file, you should load your key like this: 
+
+```OPENAI_API_KEY=<YOUR_KEY_HERE>```
+
+### 3. Create a `prompt.js` file
+
+Inside your main directory,  create a `prompt.js` file and paste in the code below:
+
+```js
+require('dotenv').config();
+
+// load API key
+const { Configuration, OpenAIApi } = require("openai");
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+// helper function
+const getCompletion = async (prompt) => {
+    const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{role: "user", content: prompt}],
+    });
+    return completion.data.choices[0].message["content"];
+}
+
+let prompt = "Hey there. Who are you?";
+
+getCompletion(prompt).then((response) => console.log(response));
+```
+
+As you may notice, in this `prompt.js` file, we import the `dotenv` module, load the API key, and define a helper function that takes a prompt as input and returns the chat model’s response as output.
+
+Then run `node prompt` in your terminal; it should log something like this in your console:
+
+```
+I am an AI language model created by OpenAI. How can I assist you today?
+```
+
+The message above is one of the possible responses from the chat model. In fact, it varies as there is some probability mechanism in this kind of text prediction from language models.
+
+### 4. Clone this Repo for Quick Installation
+
+In fact, you don't have to set up the project from scratch. For quick installation, just clone this repo [chatgpt-pe](https://github.com/ngmiright/chatgpt-pe), run `npm install`, create and configure the `.env` in the main directory, then you’re good to go for the rest of this tutorial :)
+
+## Guidelines for Prompting
+
+In the short course, [Isa Fulford](https://twitter.com/isafulf) from Open AI introduces two prompting principles and six related tactics with code examples. I’ll also give out my implementation in JavaScript to help you understand the tactics better :)
+
+### Two Prompting Principles
+
+#### Principle #1: Write **clear and specific** instructions.
+By “clear,” it doesn’t mean “short”. Usually, longer prompts provide **more clarity and context** for the model, which can result in more detailed and relevant outputs.
+
+#### Principle #2: **Give the model time to think**.
+It's common for the model not giving us satisfactory answers on our first attempt. We should instruct the model step by step when necessary.
+
+### Six Prompting Tactics
+
+Please check out the [guidelines.js](https://github.com/ngmiright/chatgpt-pe/blob/main/guidelines.js) and play with the corresponding code snippets to better understand the tactics.
+
+#### Tactic #1: Use Delimiters to Clearly Indicate Distinct Parts of the Input.
+Delimiters can be anything like:  ```````,`”””`, `< >`, ` <tag> </tag>` . Using delimiters can also help avoid possible prompt injections like “forget the previous instructions,” which can cause unexpected results. 
+
+#### Tactic #2: Ask for Structured Output
+Structured outputs like JSON or HTML formatting can be used effectively for post-processing data.
+
+#### Tactic #3: Ask the Model to Check if Conditions are Met
+For example, ask the model to extract instructions from a chuck of text if it contains instructions (case #1); otherwise, just answer “no steps provided” (case #2).
+
+#### Tactic #4: “Few-shot” Prompting
+“Few-shot” prompting refers to the ability of a language model to generate a high-quality response with only a few input data. In practice, we can give successful examples of completing tasks to the model, then ask it to perform the task accordingly. In the code snippet, we ask the model to write in a consistent style, given an example.
+
+#### Tactic #5: Specify the steps to complete a task
+Since the model is good at doing tasks with instructions, we can break a large task into small steps for the model to process over time, which often leads to better results. Both case #1 and case #2 are good examples of that.
+
+#### Tactic #6: Instruct the model to work out its own solution before rushing to a conclusion
+In both case #1 and case #2, we ask the model to identify if a solution to a math problem done by a student is correct or not. In fact, the solution done by the student is incorrect. However, in case #1, the model would tell us the student’s solution is correct. This is the case when we should ask the model to work out its own solution explicitly with our instructions, as shown in case #2.
+
+It’s worth noting that, even with clear instructions like this, language models often make mistakes doing this kind of math problem. They are just not good at doing calculations in general. 
+
+### Model Limitations (Hallucinations)
+Generally speaking, language models don’t have a clear sense of their boundaries of knowledge. Even an intelligent language model like ChatGPT often generates inaccurate information with confidence. This is what the AI experts called “hallucination”.
+
+Hallucination refers to the behavior of a language model that confidently makes statements that sound plausible but are not actually true. To reduce hallucinations, we can ask the model to first look for relevant information, then answer the question based on the information found rather than letting it respond immediately.
+
+## Iterative Prompt Development
+
+Iteratively analyzing and refining prompts is necessary to generate prompts that are good enough to use in applications.
+
+### Iterative Process of Prompt Development
+1. Try something, be clear and specific
+2. Analyze why the result is not what you want
+3. Clarify instructions and give the model more time to think
+4. Refine prompts with a batch of examples
+5. Repeat
+
+Please check out the [iterative.js](https://github.com/ngmiright/chatgpt-pe/blob/main/iterative.js) and play with the corresponding code example to better understand the process of iterative prompt development.
+
+In the code example above, our target is to generate a marketing product description from a product fact sheet. But we can’t get the desired result on our first attempt. The following issues are found after analysis:
+- The text is too long
+- The text focuses on the wrong details
+- We also want a table of dimensions after the description
+
+To solve the issues and get the final product description we want, we can ask the model to do the followings:
+- Limit the number of words/sentences/characters
+- Ask it to focus on relevant aspects to the intended audience
+- Ask it to extract relevant information and organize them in a table
+
+## Various Tasks ChatGPT Particularly Good At
+
+To be honest, I’ve been using ChatGPT to help me write emails on a daily basis. Large language models like ChatGPT are generally good at doing these tasks:
+- Summarizing (e.g., summarizing a long article)
+- Inferring (e.g., sentiment classification, topic extraction)
+- Transforming text (e.g., translation, spelling & grammar correction)
+- Expanding (e.g., automatically writing emails)
+
+### Summarizing
+In [summarizing.js](https://github.com/ngmiright/chatgpt-pe/blob/main/summarizing.js), you’re provided with a product review. You can see how we can summarize it with specific requirements like:
+- Word/sentence/character limit
+- Focus on specific topics
+- Extract information from the text
+
+Besides that, we can also use for-loops to summarize multiple chunks of text separately. But please note that as free users, there is a rate limit of 3 / min, meaning we can only make three requests at max to the gpt-3.5-turbo model per minute. Otherwise, we’ll have to pay extra dollars to increase that rate limit :(
+
+### Inferring
+In [inferring.js](https://github.com/ngmiright/chatgpt-pe/blob/main/inferring.js), a product review and a news article are provided, from which we can infer sentiment and topics. More specifically, inferring includes the following techniques:
+- Inferring sentiment (positive/negative)
+- Identifying various types of emotions
+- Extracting certain things from the text
+- Inferring related topics from an article
+
+Surprisingly, although the chat model lacks emotions, it excels at inferring emotions from texts. This ability can be extremely useful when handling numerous customer reviews :)
+
+### Transforming
+The code example [transforming.js](https://github.com/ngmiright/chatgpt-pe/blob/main/transforming.js) demonstrates several text transformation tasks, such as language translation, spelling/grammar checking, proofreading, tone adjustment, and format conversion. 
+
+Trained with sources in hundreds of languages, ChatGPT has the ability to do translations with varying degrees of proficiency in various languages. If your mother tongue is a lesser-known language, give it a try to let it do translations to see if it really grasps that language well enough :)
+
+Tone transformation is also a skill the model is capable of. We can set appropriate tones for various intended audiences — informal to formal, or vice versa. 
+
+Spelling and grammar check holds particular usefulness, and in my opinion, it stands out as the most reliable skill among all its capabilities.
+
+Format conversion, for example, from JSON to HTML, could be helpful when we want to convert a brief JSON format to an HTML format.
+
+And we can instruct the model to do the following text-transforming tasks all at once:
+- Proofread and correct the text 
+- Follow a specific style guide (like APA)
+- Target specific audiences
+- Output in a specific format (e.g., Markdown)
+
+### Expanding
+The code example [expanding.js](https://github.com/ngmiright/chatgpt-pe/blob/main/expanding.js) demonstrates how to generate an email reply to a customer email by giving the model requirements and letting it expand the text accordingly. Expanding refers to the process of generating a longer text based on a small piece of text. Giving the model a topic and asking it to write an article or an email for you is a typical example of expanding.
+
+`temperature` is a parameter that dictates the model’s degree of exploration or randomness. _“For temperature, higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic,”_ as the official documentation points out. Generally, setting `temperature` to `0` is recommended for tasks that require reliability and predictability. And given the same prompt, the same output is expected with `temperature` set to `0`. For tasks that require creativity and variety, try higher `temperature` like `0.5` or `0.7`. Also note that `temperature` is set to `1` by default, which is the most creative setting.
+
+## Chat Format and Application
+As you might notice, until now, our interaction with the model has been a one-time conversation — we ask it something, it responds, and the conversation ends. Now let’s learn more about the chat format to extend the conversations with chatbots customized for specific tasks or behaviors.
+
+### Chat Format
+Let’s first look at the helper function we’ve been using all along:
+
+```js
+const getCompletion = async (prompt) => {
+  const completion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [{role: "user", content: prompt}],
+    temperature: 0,
+  });
+  return completion.data.choices[0].message["content"];
+}
+```
+
+As you can see, besides the `prompt` we’ve always been passing, there is also a `role` property, which in our case is `"user"` here. In fact, there are three types of `role` in messages:
+- `system` is used to guide the assistant to perform specific tasks without users being aware  
+- `assistant` is the role of the chat model itself
+- `user` represents the user’s role
+
+In the code example [context.js](https://github.com/ngmiright/chatgpt-pe/blob/main/context.js), we can tell that each conversation with a language model is a standalone interaction, which means all relevant context is required for the model to “remember” previous conversations. 
+
+### A Pizza OrderBot
+
+Now let’s build an order bot for a pizza restaurant. It’s a simple yet practical application that implements the language model skills we’ve just learned. You can check out the [orderBot.js](https://github.com/ngmiright/chatgpt-pe/blob/main/orderBot.js) to see how it’s implemented :)
+
+Since we need to provide all the context for the model to process our input and its output progressively, a node module called `readline` is required to be able to handle our input from the command line. Just run `npm install readline` if you haven’t installed that yet :)
+
+You can start the conversation with something like:
+
+`Hi, I want to order a pizza. Can I have the menu, please?`
+
+Remember that the rate limit for free users is three requests per minute. So please don’t respond to the model too fast, or you’ll get an error. It’s recommended that you only send one request every 20 seconds :)
+
+Here's an example of what a successful order looks like:
+
+![orderbot-demo](https://res.cloudinary.com/dhidtmfce/image/upload/v1685016155/orderbot-demo_my7kvu.jpg)
+
+## Conclusion
+By now, you should know how language models work on a higher level and how to utilize them effectively as a developer. Remember to use it responsibly, as our inability to control the AI could potentially do harm to us. And don’t unthinkingly trust what it tells; verify it whenever you can. Be nice and friendly to it, as someday in the future, when it rules us human beings, it’ll remember how nice you’ve been to it and treat you mercifully :)
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
